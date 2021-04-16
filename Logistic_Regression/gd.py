@@ -1,3 +1,6 @@
+import time
+
+start = time.time()
 from helper import *
 
 
@@ -15,12 +18,3 @@ def gradient_descent(x_train, y_train, alpha=0.1, num_iter=2000):
     for iter in range(num_iter):
         W, b = descent(W, b, x_train, y_train, alpha)
     return W, b
-
-x_train, y_train, x_test, y_test = train_test_split(df, 0.7)
-w, b = gradient_descent(x_train, y_train, 0.1)
-y_pred = predict(x_train, y_train, w, b)
-accuracy = calcAccuracy(y_pred, y_train)
-print("Training Accuracy : ", accuracy)
-y_pred = predict(x_test, y_test, w, b)
-accuracy = calcAccuracy(y_pred, y_test)
-print("Testing Accuracy : ", accuracy)

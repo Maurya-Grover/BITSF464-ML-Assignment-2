@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,9 +15,8 @@ def train_test_split(dataframe, split=0.70):
     y_train = train[:, -1]
     x_test = test[:, :-1]
     y_test = test[:, -1]
-    # y_train = y_train.reshape((y_train.shape[0], 1))
-    # y_test = y_test.reshape((y_test.shape[0], 1))
     return x_train, y_train, x_test, y_test
+
 
 def plot(x_train, y_train):
     fig = plt.figure()
@@ -37,18 +35,22 @@ def plot(x_train, y_train):
     )
     plt.show()
 
+
 def sigmoid(x):
-    return (1 /(1 + np.exp(-x)))
+    return 1 / (1 + np.exp(-x))
+
 
 def predict(x_test, y_test, w, b):
     predicted_value = x_test.dot(w) + b
     yhat = sigmoid(predicted_value)
     return yhat >= 0.5
 
+
 def calcAccuracy(y_pred, y_test):
     check_pred = np.array([y_pred == y_test]).T
-    accuracy = (np.sum(check_pred) * 100 )/ check_pred.shape[0]
+    accuracy = (np.sum(check_pred) * 100) / check_pred.shape[0]
     return accuracy
+
 
 x_train, y_train, x_test, y_test = train_test_split(df, 0.7)
 
