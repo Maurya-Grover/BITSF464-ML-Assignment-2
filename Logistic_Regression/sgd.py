@@ -12,5 +12,4 @@ def stochastic_gradient_descent(x_train, y_train, alpha=0.05, num_iter=400):
             diff = sigmoid(y_prediction) - y_train[i]
             w = w - alpha * (x_i.T * diff)
             b = b - alpha * diff
-
     return w, b
