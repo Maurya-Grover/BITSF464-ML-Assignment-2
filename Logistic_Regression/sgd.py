@@ -2,7 +2,7 @@
 from helper import *
 
 
-def stochastic_gradient_descent(x_train, y_train, alpha=0.05, num_iter=400):
+def stochastic_gradient_descent(x_train, y_train, alpha=0.05, num_iter=100):
     w = np.zeros(x_train.shape[1])
     b = 0
     for iter in range(num_iter):

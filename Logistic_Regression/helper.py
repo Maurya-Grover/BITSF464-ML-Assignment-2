@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 df = pd.read_csv("./dataset_LR.csv")
 
 
-def train_test_split(dataframe, split=0.70):
+def train_test_split(dataframe, split=0.70, randomState = 1):
     train_size = int(split * len(dataframe))
     test_size = len(dataframe) - train_size
-    dataframe = dataframe.sample(frac=1, random_state=69)
+    dataframe = dataframe.sample(frac=1, random_state = randomState)
     train = dataframe[:train_size].to_numpy()
     test = dataframe[-test_size:].to_numpy()
     x_train = train[:, :-1]
