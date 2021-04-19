@@ -53,16 +53,5 @@ net.fit(x_train, y_train, 10, 0.5)
 
 out = np.array(net.predict(x_train))
 y_pred = np.argmax(out, axis = 1)
-"""
-for i in range(len(out)):
-    cur_sample = out[i]
-    cur_max = -1
-    max_class = -1
-    for j in range(cur_sample.shape[0]):
-        if cur_sample[j] > cur_max:
-            max_class = j + 1
-        pass
-    y_pred.append(max_class)
-y_pred = np.array(y_pred)
-"""
+
 print(out)
