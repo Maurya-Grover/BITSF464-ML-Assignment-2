@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import sys
 
 df = pd.read_csv("./dataset_NN.csv")
 # X = df[df.columns[:-1]]
@@ -13,6 +12,20 @@ def train_test_split(dataframe, split=0.70, randomState=1):
     dataframe = dataframe.sample(frac=1, random_state=randomState)
     train = normalise(dataframe[:train_size]).to_numpy()
     test = normalise(dataframe[-test_size:]).to_numpy()
+    x_train = train[:, :-1]
+    y_train = train[:, -1].astype(np.int)
+    x_test = test[:, :-1]
+    y_test = test[:, -1].astype(np.int)
+    return x_train, y_train, x_test, y_test
+
+
+def train_test_split2(dataframe, split=0.70, randomState=1):
+    train_size = int(split * len(dataframe))
+    test_size = len(dataframe) - train_size
+    dataframe = normalise(dataframe)
+    dataframe = dataframe.sample(frac=1, random_state=randomState)
+    train = dataframe[:train_size].to_numpy()
+    test = dataframe[-test_size:].to_numpy()
     x_train = train[:, :-1]
     y_train = train[:, -1].astype(np.int)
     x_test = test[:, :-1]
@@ -66,10 +79,8 @@ def error(pred, real):
     loss = np.sum(logp) / n_samples
     return loss
 
-
 def accuracy(y, yhat):
     return np.sum((y == yhat).astype(np.int)) / y.shape[0]
-
 
 class MyNN:
     def __init__(self, x, y, lr, nnl1, nnl2):
@@ -97,6 +108,8 @@ class MyNN:
         self.a3 = softmax(z3)
 
     def backprop(self):
+        loss = error(self.a3, self.y)
+        # print("Error :", loss)
         a3_delta = cross_entropy(self.a3, self.y)  # w3
         z2_delta = np.dot(a3_delta, self.w3.T)
         a2_delta = z2_delta * relu_derv(self.a2)  # w2
@@ -110,10 +123,6 @@ class MyNN:
         self.w1 -= self.lr * np.dot(self.x.T, a1_delta)
         self.b1 -= self.lr * np.sum(a1_delta, axis=0)
 
-    def print_loss(self):
-        loss = error(self.a3, self.y)
-        print("Error :", loss)
-
     def predict(self, data):
         self.x = data
         self.feedforward()
@@ -124,13 +133,31 @@ x_train, y_train, x_test, y_test = train_test_split(df, split=0.7)
 y_train_encoded = expand_y(y_train)
 y_test_encoded = expand_y(y_test)
 
-model = MyNN(x_train, y_train_encoded, 0.05, 15, 10)
+model = MyNN(x_train, y_train_encoded, 0.01, 20, 15)
 
-epochs = 5000
+epochs = 1000
 for epoch in range(epochs):
     model.feedforward()
-    if epoch % 50 == 0:
-        model.print_loss()
+    model.backprop()
+
+yhat_train = model.predict(x_train)
+yhat_test = model.predict(x_test)
+train_accuracy = accuracy(np.argmax(yhat_train, axis=1) + 1, y_train)
+test_accuracy = accuracy(np.argmax(yhat_test, axis=1) + 1, y_test)
+
+print("Training accuracy : ", train_accuracy)
+print("Test accuracy : ", test_accuracy)
+
+
+x_train, y_train, x_test, y_test = train_test_split2(df, split=0.7)
+y_train_encoded = expand_y(y_train)
+y_test_encoded = expand_y(y_test)
+
+model = MyNN(x_train, y_train_encoded, 0.01, 20, 15)
+
+epochs = 1000
+for epoch in range(epochs):
+    model.feedforward()
     model.backprop()
 
 yhat_train = model.predict(x_train)
