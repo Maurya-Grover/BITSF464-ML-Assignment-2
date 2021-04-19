@@ -45,6 +45,11 @@ def predict(x_test, y_test, w, b):
     yhat = sigmoid(predicted_value)
     return yhat >= 0.5
 
+def cost(x, y, w, b):
+    predicted_value = x.dot(w) + b
+    yhat = sigmoid(predicted_value)
+    return -np.sum(np.dot(y, yhat) + np.dot(1-y, 1-yhat))/x.shape[0]
+
 
 def calcAccuracy(y_pred, y_test):
     check_pred = np.array([y_pred == y_test]).T
