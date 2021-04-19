@@ -6,4 +6,4 @@ def mse(y, yhat):
 
 
 def mse_prime(y, yhat):
-    return 2 * (y - yhat) / y.size
+    return 2 * (yhat - y) / y.size

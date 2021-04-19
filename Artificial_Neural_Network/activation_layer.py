@@ -12,4 +12,4 @@ class ACLayer(Layer):
         return self.output
     
     def back_prop(self, output_error, learning_rate):
-        return self.activation_prime(self.input) * output error
+        return (self.activation_prime(self.input) * output_error)
