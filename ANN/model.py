@@ -1,10 +1,12 @@
 import pandas as pd
 import numpy as np
-import sys
+import matplotlib.pyplot as plt
+import time
+
 
 df = pd.read_csv("./dataset_NN.csv")
-# X = df[df.columns[:-1]]
-# y = df[df.columns[-1]]
+
+start = time.time()
 
 
 def train_test_split(dataframe, split=0.70, randomState=1):
@@ -71,6 +73,25 @@ def accuracy(y, yhat):
     return np.sum((y == yhat).astype(np.int)) / y.shape[0]
 
 
+def plot_function():
+    ax1.set_title("Loss vs Epoch")
+    ax1.set_ylabel("Loss")
+    ax1.set_xlabel("Number of epochs")
+    ax1.plot(error_plot, label="Loss")
+    ax1.legend()
+
+    ax2.set_title("Accuracy vs Epoch")
+    ax2.set_ylabel("Accuracy")
+    ax2.set_xlabel("Number of epochs")
+    ax2.plot(acc_plot, label="Accuracy")
+    ax2.legend()
+
+    plt.draw()
+    plt.pause(0.001)
+    ax1.clear()
+    ax2.clear()
+
+
 class MyNN:
     def __init__(self, x, y, lr, nnl1, nnl2):
         self.x = x
@@ -97,11 +118,11 @@ class MyNN:
         self.a3 = softmax(z3)
 
     def backprop(self):
-        a3_delta = cross_entropy(self.a3, self.y)  # w3
+        a3_delta = cross_entropy(self.a3, self.y)
         z2_delta = np.dot(a3_delta, self.w3.T)
-        a2_delta = z2_delta * relu_derv(self.a2)  # w2
+        a2_delta = z2_delta * relu_derv(self.a2)
         z1_delta = np.dot(a2_delta, self.w2.T)
-        a1_delta = z1_delta * relu_derv(self.a1)  # w1
+        a1_delta = z1_delta * relu_derv(self.a1)
 
         self.w3 -= self.lr * np.dot(self.a2.T, a3_delta)
         self.b3 -= self.lr * np.sum(a3_delta, axis=0, keepdims=True)
@@ -110,9 +131,9 @@ class MyNN:
         self.w1 -= self.lr * np.dot(self.x.T, a1_delta)
         self.b1 -= self.lr * np.sum(a1_delta, axis=0)
 
-    def print_loss(self):
+    def calc_loss(self, epoch, epochs):
         loss = error(self.a3, self.y)
-        print("Error :", loss)
+        return loss
 
     def predict(self, data):
         self.x = data
@@ -120,23 +141,38 @@ class MyNN:
         return self.a3
 
 
+plt.ion()
+fig, (ax1, ax2) = plt.subplots(2)
+fig.tight_layout(pad=1.0)
+
 x_train, y_train, x_test, y_test = train_test_split(df, split=0.7)
 y_train_encoded = expand_y(y_train)
 y_test_encoded = expand_y(y_test)
 
-model = MyNN(x_train, y_train_encoded, 0.05, 15, 10)
+model = MyNN(x_train, y_train_encoded, 0.01, 128, 128)
 
-epochs = 5000
+epochs = 10000
+error_plot = []
+acc_plot = []
+
 for epoch in range(epochs):
     model.feedforward()
+    loss = model.calc_loss(epoch, epochs)
+    cur_acc = accuracy(np.argmax(model.predict(x_train), axis = 1) + 1, y_train)
+    error_plot.append(loss)
+    acc_plot.append(cur_acc)
     if epoch % 50 == 0:
-        model.print_loss()
+        print(f"{epoch}/{epochs} Error :", loss)
+        plot_function()
+
     model.backprop()
 
 yhat_train = model.predict(x_train)
 yhat_test = model.predict(x_test)
 train_accuracy = accuracy(np.argmax(yhat_train, axis=1) + 1, y_train)
 test_accuracy = accuracy(np.argmax(yhat_test, axis=1) + 1, y_test)
+end = time.time()
 
+print(f"Runtime of the program is {end - start}")
 print("Training accuracy : ", train_accuracy)
 print("Test accuracy : ", test_accuracy)
