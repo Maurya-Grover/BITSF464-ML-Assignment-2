@@ -36,7 +36,7 @@ for i in range(10):
                 tn+=1
             else:
                 fp+=1
-    tot_prec+=(tn/(tp+fp))
+    tot_prec+=(tp/(tp+fp))
     tot_recall += tp/ (tp + fn)
     tot_accuracy+=accuracy
     tot_loss+=cost(x_test, y_test, w, b)

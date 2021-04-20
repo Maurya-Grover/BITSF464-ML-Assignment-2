@@ -56,7 +56,3 @@ def calcAccuracy(y_pred, y_test):
     accuracy = (np.sum(check_pred) * 100) / check_pred.shape[0]
     return accuracy
 
-
-x_train, y_train, x_test, y_test = train_test_split(df, 0.7)
-
-# plot(x_train, y_train)
