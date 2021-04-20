@@ -33,6 +33,7 @@ def plot(x_train, y_train):
         x_train[y_train == 0, 3],
         color="red",
     )
+    plt.ylim([0, 100])
     plt.show()
 
 
@@ -48,7 +49,7 @@ def predict(x_test, y_test, w, b):
 def cost(x, y, w, b):
     predicted_value = x.dot(w) + b
     yhat = sigmoid(predicted_value)
-    return -np.sum(np.dot(y, np.log(yhat)) + np.dot(1-y, np.log(1-yhat)))/x.shape[0]
+    return -np.sum(np.dot(y, np.log(yhat + 1e-9)) + np.dot(1-y, np.log(1-yhat + 1e-9)))/x.shape[0]
 
 
 def calcAccuracy(y_pred, y_test):
