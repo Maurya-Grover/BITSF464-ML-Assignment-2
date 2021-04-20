@@ -51,6 +51,14 @@ def sigmoid_derv(s):
     return s * (1 - s)
 
 
+def tanh(z):
+    return np.tanh(z)
+
+
+def tanh_derv(z):
+    return 1 - np.tanh(z) ** 2
+
+
 def softmax(s):
     exps = np.exp(s - np.max(s, axis=1, keepdims=True))
     return exps / np.sum(exps, axis=1, keepdims=True)
@@ -92,7 +100,7 @@ def plot_function():
     ax2.clear()
 
 
-class MyNN:
+class Network:
     def __init__(self, x, y, lr, nnl1, nnl2):
         self.x = x
         self.y = y
@@ -111,18 +119,18 @@ class MyNN:
 
     def feedforward(self):
         z1 = np.dot(self.x, self.w1) + self.b1
-        self.a1 = relu(z1)
+        self.a1 = tanh(z1)
         z2 = np.dot(self.a1, self.w2) + self.b2
-        self.a2 = relu(z2)
+        self.a2 = tanh(z2)
         z3 = np.dot(self.a2, self.w3) + self.b3
         self.a3 = softmax(z3)
 
     def backprop(self):
         a3_delta = cross_entropy(self.a3, self.y)
         z2_delta = np.dot(a3_delta, self.w3.T)
-        a2_delta = z2_delta * relu_derv(self.a2)
+        a2_delta = z2_delta * tanh_derv(self.a2)
         z1_delta = np.dot(a2_delta, self.w2.T)
-        a1_delta = z1_delta * relu_derv(self.a1)
+        a1_delta = z1_delta * tanh_derv(self.a1)
 
         self.w3 -= self.lr * np.dot(self.a2.T, a3_delta)
         self.b3 -= self.lr * np.sum(a3_delta, axis=0, keepdims=True)
@@ -131,7 +139,7 @@ class MyNN:
         self.w1 -= self.lr * np.dot(self.x.T, a1_delta)
         self.b1 -= self.lr * np.sum(a1_delta, axis=0)
 
-    def calc_loss(self, epoch, epochs):
+    def calc_loss(self):
         loss = error(self.a3, self.y)
         return loss
 
@@ -149,7 +157,7 @@ x_train, y_train, x_test, y_test = train_test_split(df, split=0.7)
 y_train_encoded = expand_y(y_train)
 y_test_encoded = expand_y(y_test)
 
-model = MyNN(x_train, y_train_encoded, 0.01, 128, 128)
+model = Network(x_train, y_train_encoded, 0.01, 64, 32)
 
 epochs = 10000
 error_plot = []
@@ -157,14 +165,13 @@ acc_plot = []
 
 for epoch in range(epochs):
     model.feedforward()
-    loss = model.calc_loss(epoch, epochs)
-    cur_acc = accuracy(np.argmax(model.predict(x_train), axis = 1) + 1, y_train)
+    loss = model.calc_loss()
+    cur_acc = accuracy(np.argmax(model.predict(x_train), axis=1) + 1, y_train)
     error_plot.append(loss)
     acc_plot.append(cur_acc)
     if epoch % 50 == 0:
         print(f"{epoch}/{epochs} Error :", loss)
         plot_function()
-
     model.backprop()
 
 yhat_train = model.predict(x_train)
