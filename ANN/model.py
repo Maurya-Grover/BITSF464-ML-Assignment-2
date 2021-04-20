@@ -44,7 +44,7 @@ def relu_derv(z):
 
 
 def leaky_relu(z):
-    return np.where(z > 0, z, z * 0.01) 
+    return np.maximum(0.01 *z, z)
 
 
 def leaky_relu_derv(z):
@@ -167,7 +167,7 @@ x_train, y_train, x_test, y_test = train_test_split(df, split=0.7)
 y_train_encoded = expand_y(y_train)
 y_test_encoded = expand_y(y_test)
 
-model = Network(x_train, y_train_encoded, 0.01, 10, 10)
+model = Network(x_train, y_train_encoded, 0.01, 15, 10)
 
 epochs = 10000
 error_plot = []
