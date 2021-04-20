@@ -44,22 +44,21 @@ def relu_derv(z):
 
 
 def leaky_relu(z):
-    return np.maximum(0.01 * z, z)
+    return np.where(z > 0, z, z * 0.01) 
 
 
 def leaky_relu_derv(z):
-    if z > 0:
-        return 1
-    else:
-        return 0.01
+    dz = np.ones_like(z)
+    dz[z < 0] = 0.01
+    return dz
 
 
-def sigmoid(s):
-    return 1 / (1 + np.exp(-s))
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
 
 
-def sigmoid_derv(s):
-    return s * (1 - s)
+def sigmoid_derv(z):
+    return z * (1 - z)
 
 
 def tanh(z):
@@ -130,18 +129,18 @@ class Network:
 
     def feedforward(self):
         z1 = np.dot(self.x, self.w1) + self.b1
-        self.a1 = relu(z1)
+        self.a1 = leaky_relu(z1)
         z2 = np.dot(self.a1, self.w2) + self.b2
-        self.a2 = relu(z2)
+        self.a2 = leaky_relu(z2)
         z3 = np.dot(self.a2, self.w3) + self.b3
         self.a3 = softmax(z3)
 
     def backprop(self):
         a3_delta = cross_entropy(self.a3, self.y)
         z2_delta = np.dot(a3_delta, self.w3.T)
-        a2_delta = z2_delta * relu_derv(self.a2)
+        a2_delta = z2_delta * leaky_relu_derv(self.a2)
         z1_delta = np.dot(a2_delta, self.w2.T)
-        a1_delta = z1_delta * relu_derv(self.a1)
+        a1_delta = z1_delta * leaky_relu_derv(self.a1)
 
         self.w3 -= self.lr * np.dot(self.a2.T, a3_delta)
         self.b3 -= self.lr * np.sum(a3_delta, axis=0, keepdims=True)
@@ -168,7 +167,7 @@ x_train, y_train, x_test, y_test = train_test_split(df, split=0.7)
 y_train_encoded = expand_y(y_train)
 y_test_encoded = expand_y(y_test)
 
-model = Network(x_train, y_train_encoded, 0.01, 128, 64)
+model = Network(x_train, y_train_encoded, 0.01, 10, 10)
 
 epochs = 10000
 error_plot = []
