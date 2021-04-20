@@ -41,7 +41,7 @@ for i in range(10):
     tot_accuracy+=accuracy
     tot_loss+=cost(x_test, y_test, w, b)
     print(f"Testing Accuracy (Random Split #{i+1}): ", accuracy)
-# plt.show()
+plt.show()
 end = time.time()
 tot_accuracy/=10
 tot_prec/=10
