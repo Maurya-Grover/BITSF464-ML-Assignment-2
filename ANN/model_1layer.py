@@ -102,7 +102,7 @@ def plot_function():
     ax2.set_xlabel("Number of epochs")
     ax2.plot(acc_plot, label="Accuracy")
 
-    plt.savefig("LR_1_0.5.png", dpi=500)
+    #plt.savefig("LR_1_0.01.png", dpi=500)
     plt.show()
     # plt.draw()
     # plt.pause(0.001)
@@ -126,14 +126,14 @@ class Network:
 
     def feedforward(self):
         z1 = np.dot(self.x, self.w1) + self.b1
-        self.a1 = relu(z1)
+        self.a1 = leaky_relu(z1)
         z2 = np.dot(self.a1, self.w2) + self.b2
         self.a2 = softmax(z2)
 
     def backprop(self):
         a2_delta = cross_entropy(self.a2, self.y)
         z1_delta = np.dot(a2_delta, self.w2.T)
-        a1_delta = z1_delta * relu_derv(self.a1)
+        a1_delta = z1_delta * leaky_relu_derv(self.a1)
 
         self.w2 -= self.lr * np.dot(self.a1.T, a2_delta)
         self.b2 -= self.lr * np.sum(a2_delta, axis=0, keepdims=True)
@@ -158,7 +158,7 @@ x_train, y_train, x_test, y_test = train_test_split(df, split=0.7)
 y_train_encoded = expand_y(y_train)
 y_test_encoded = expand_y(y_test)
 
-model = Network(x_train, y_train_encoded, 0.5, 32)
+model = Network(x_train, y_train_encoded, 0.01, 32)
 
 epochs = 10000
 error_plot = []
