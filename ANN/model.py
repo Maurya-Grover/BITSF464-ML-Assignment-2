@@ -96,18 +96,19 @@ def plot_function():
     ax1.set_ylabel("Loss")
     ax1.set_xlabel("Number of epochs")
     ax1.plot(error_plot, label="Loss")
-    ax1.legend()
 
     ax2.set_title("Accuracy vs Epoch")
     ax2.set_ylabel("Accuracy")
     ax2.set_xlabel("Number of epochs")
     ax2.plot(acc_plot, label="Accuracy")
-    ax2.legend()
 
-    plt.draw()
-    plt.pause(0.001)
-    ax1.clear()
-    ax2.clear()
+    # plt.savefig("LR0.1.png", dpi=500)
+    plt.show()
+
+    # plt.draw()
+    # plt.pause(0.001)
+    # ax1.clear()
+    # ax2.clear()
 
 
 class Network:
@@ -161,16 +162,16 @@ class Network:
 
 
 # plt.ion()
-# fig, (ax1, ax2) = plt.subplots(2)
-# fig.tight_layout(pad=1.0)
+fig, (ax1, ax2) = plt.subplots(2)
+fig.tight_layout(pad=3.0)
 
 x_train, y_train, x_test, y_test = train_test_split(df, split=0.7)
 y_train_encoded = expand_y(y_train)
 y_test_encoded = expand_y(y_test)
 
-model = Network(x_train, y_train_encoded, 0.01, 15, 10)
+model = Network(x_train, y_train_encoded, 0.01, 32, 32)
 
-epochs = 1000
+epochs = 10000
 error_plot = []
 acc_plot = []
 
@@ -194,3 +195,4 @@ end = time.time()
 print(f"Runtime of the program is {end - start}")
 print(f"Training accuracy : {train_accuracy:.3f}")
 print(f"Test accuracy : {test_accuracy:.3f}")
+plot_function()

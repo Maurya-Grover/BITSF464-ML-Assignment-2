@@ -19,7 +19,7 @@ def gradient_descent(x_train, y_train, alpha=0.1, num_iter=2000):
     accuracies = []
     for iter in range(num_iter):
         W, b = descent(W, b, x_train, y_train, alpha)
-        if iter % 50 ==0:
+        if iter % 50 == 0:
             y_pred = predict(x_train, y_train, W, b)
             currAcc = calcAccuracy(y_pred, y_train)
             accuracies.append(currAcc)
