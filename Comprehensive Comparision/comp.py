@@ -54,6 +54,43 @@ for i in range(7):
     y_pred = SVMmodel.predict(X_test)
     SVMscores.append(accuracy_score(y_test, y_pred))
 
+print("LDA")
+print(LDAscores)
+LS = np.array(LDAscores)
+print(LS.mean())
+print(LS.std())
+
+print("Perceptron")
+print(PCPscores)
+LS = np.array(PCPscores)
+print(LS.mean())
+print(LS.std())
+
+print("Naive Bayes")
+print(NBscores)
+LS = np.array(NBscores)
+print(LS.mean())
+print(LS.std())
+
+print("Logistice Regression")
+print(LRscores)
+LS = np.array(LRscores)
+print(LS.mean())
+print(LS.std())
+
+print("ANN")
+print(ANNscores)
+LS = np.array(ANNscores)
+print(LS.mean())
+print(LS.std())
+
+print("SVM")
+print(SVMscores)
+LS = np.array(SVMscores)
+print(LS.mean())
+print(LS.std())
+
+
 fig = plt.figure(figsize =(10, 7))
 ax = fig.add_axes([1, 0, 1, 1])
 data = [np.array(LDAscores), np.array(PCPscores), np.array(NBscores), np.array(LRscores), np.array(ANNscores), np.array(SVMscores)]
